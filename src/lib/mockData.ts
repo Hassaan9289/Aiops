@@ -221,6 +221,13 @@ export const timeline: TimelineEvent[] = [
 
 export const connectors: Connector[] = [
   {
+    id: "mulesoft",
+    name: "MuleSoft",
+    status: "connected",
+    lastSync: "10m ago",
+    description: "API & data integration across systems.",
+  },
+  {
     id: "srvnow",
     name: "ServiceNow",
     status: "connected",
