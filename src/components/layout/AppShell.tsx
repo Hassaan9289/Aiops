@@ -3,17 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Activity,
-  Brain,
+  Cloud,
+  CloudSun,
   LayoutDashboard,
-  LineChart,
-  ListChecks,
-  MessageCircle,
-  Network,
   PlugZap,
-  ShieldAlert,
+  Server,
+  ServerCog,
   UserCircle2,
-  Workflow,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,7 +31,7 @@ type NavItem = {
 
 const nav: { label: string; items: NavItem[] }[] = [
   {
-    label: "Overview",
+    label: "Core",
     items: [
       {
         label: "Dashboard",
@@ -42,36 +39,28 @@ const nav: { label: string; items: NavItem[] }[] = [
         icon: LayoutDashboard,
         roles: ["admin", "operator", "executive", "observer"],
       },
+      {
+        label: "Enterprise systems",
+        href: "/enterprise-systems",
+        icon: Server,
+        roles: ["admin", "operator", "executive", "observer"],
+      },
     ],
   },
   {
-    label: "Operate",
+    label: "Platform",
     items: [
-      { label: "Monitoring", href: "/monitoring", icon: Activity, roles: ["admin", "operator", "observer"] },
-      { label: "Incidents", href: "/incidents", icon: ShieldAlert, roles: ["admin", "operator", "observer"] },
-      { label: "Topology", href: "/topology", icon: Network, roles: ["admin", "operator"] },
+      { label: "Hybrids", href: "/hybrids", icon: CloudSun, roles: ["admin", "operator", "executive"] },
+      { label: "Clouds", href: "/clouds", icon: Cloud, roles: ["admin", "operator", "executive"] },
+      { label: "Agent management", href: "/agent-management", icon: UserCog, roles: ["admin", "operator"] },
+      { label: "MCP Servers", href: "/mcp", icon: ServerCog, roles: ["admin", "operator"] },
     ],
   },
   {
-    label: "Automate",
-    items: [
-      { label: "Automation", href: "/automation", icon: Workflow, roles: ["admin", "operator", "executive"] },
-      { label: "ChatOps", href: "/chatops", icon: MessageCircle, roles: ["admin", "operator"] },
-    ],
-  },
-  {
-    label: "Outcomes",
-    items: [
-      { label: "Analytics", href: "/analytics", icon: LineChart, roles: ["admin", "operator", "executive"] },
-    ],
-  },
-  {
-    label: "System",
+    label: "Operations",
     items: [
       { label: "Integrations", href: "/integrations", icon: PlugZap, roles: ["admin", "operator"] },
-      { label: "Knowledge", href: "/knowledge", icon: Brain, roles: ["admin", "operator", "executive", "observer"] },
-      { label: "Admin", href: "/admin", icon: ListChecks, roles: ["admin"] },
-      { label: "Account", href: "/account", icon: UserCircle2, roles: ["admin", "operator", "executive", "observer"] },
+      { label: "User management", href: "/user-management", icon: UserCircle2, roles: ["admin", "operator"] },
     ],
   },
 ];
@@ -187,7 +176,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
               {role && (
                 <div className="mt-1 flex justify-end">
-                  <Badge variant={roleBadgeVariant[role]} className="capitalize">
+                  <Badge className="capitalize">
                     {role}
                   </Badge>
                 </div>
