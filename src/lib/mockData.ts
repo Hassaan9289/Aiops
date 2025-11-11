@@ -242,11 +242,11 @@ export const connectors: Connector[] = [
     description: "ChatOps bridge for responders.",
   },
   {
-    id: "prom",
-    name: "Prometheus",
+    id: "datadog",
+    name: "DataDog",
     status: "connected",
-    lastSync: "1m ago",
-    description: "Metric ingestion for K8s workloads.",
+    lastSync: "2m ago",
+    description: "Cloud monitoring & observability platform.",
   },
   {
     id: "cloudwatch",
@@ -261,13 +261,6 @@ export const connectors: Connector[] = [
     status: "connected",
     lastSync: "2m ago",
     description: "APM traces & topology sync.",
-  },
-  {
-    id: "pagerduty",
-    name: "PagerDuty",
-    status: "connected",
-    lastSync: "Streaming",
-    description: "On-call orchestration.",
   },
 ];
 
