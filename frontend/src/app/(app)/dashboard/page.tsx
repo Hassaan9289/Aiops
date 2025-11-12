@@ -1,17 +1,46 @@
 'use client';
 
-import { Activity, ArrowDownRight, Bot, PiggyBank } from "lucide-react";
-import { useMemo } from "react";
+import { Activity, Bot } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useAIOpsStore } from "@/lib/store";
-import { incidentTrend } from "@/lib/mockData";
 import { Card } from "@/components/ui/card";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { HealthPill } from "@/components/ui/HealthPill";
 import { MiniList } from "@/components/ui/MiniList";
-import { TrendChart } from "@/components/ui/TrendChart";
 import { AiInsightCard } from "@/components/insights/AiInsightCard";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { RequireRole } from "@/components/auth/RequireRole";
+
+type BackendIncident = {
+  sys_id?: string;
+  number?: string;
+  short_description?: string;
+  closed_at?: string | null;
+  close_notes?: string;
+  notify?: string;
+  category?: string;
+  u_ai_category?: string;
+  [key: string]: any;
+};
+
+type BackendResponse = {
+  totalIncidents: number;
+  activeCount: number;
+  incidentTypes: { type: string; count: number }[];
+  incidents: BackendIncident[];
+};
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center gap-1" role="status" aria-label="Loading">
+    {[0, 1, 2].map((index) => (
+      <span
+        key={index}
+        className="h-2.5 w-2.5 rounded-full bg-emerald-200 opacity-80 animate-pulse"
+        style={{ animationDelay: `${index * 0.15}s` }}
+      />
+    ))}
+  </div>
+);
 
 export default function DashboardPage() {
   const services = useAIOpsStore((state) => state.services);
@@ -19,6 +48,11 @@ export default function DashboardPage() {
   const incidents = useAIOpsStore((state) => state.incidents);
   const aiInsights = useAIOpsStore((state) => state.insights);
   const runbooks = useAIOpsStore((state) => state.runbooks);
+
+  const [backendData, setBackendData] = useState<BackendResponse | null>(null);
+  const [backendError, setBackendError] = useState<string | null>(null);
+  const [backendLoading, setBackendLoading] = useState(false);
+  const [closedTab, setClosedTab] = useState<"recent" | "types">("recent");
 
   const topAnomalies = useMemo(() => anomalies.slice(0, 4), [anomalies]);
 
@@ -35,89 +69,196 @@ export default function DashboardPage() {
     };
   }, [incidents, runbooks]);
 
+useEffect(() => {
+    let isActive = true;
+    setBackendLoading(true);
+    setBackendError(null);
+
+    fetch("http://localhost:8000/incidents", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Fetch failed with status ${res.status}`);
+        }
+        const payload = (await res.json()) as BackendResponse;
+        if (isActive) {
+          setBackendData(payload);
+        }
+      })
+      .catch((err) => {
+        if (isActive) {
+          setBackendError(err?.message ?? "Unable to load incidents");
+        }
+      })
+      .finally(() => {
+        if (isActive) {
+          setBackendLoading(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const resolvedCount = backendData?.totalIncidents ?? 0;
+  const recentClosed = useMemo(() => {
+    if (!backendData) {
+      return [];
+    }
+    return [...backendData.incidents]
+      .sort((a, b) =>
+        (b.closed_at ? new Date(b.closed_at).getTime() : 0) -
+        (a.closed_at ? new Date(a.closed_at).getTime() : 0),
+      )
+      .slice(0, 5);
+  }, [backendData]);
+  const incidentTypeBreakdown = backendData?.incidentTypes ?? [];
+  const activeDisplayValue = backendLoading ? <LoadingSpinner /> : (
+    backendData?.activeCount ?? metrics.incidents
+  ).toString();
+  const resolvedDisplayValue = backendLoading ? <LoadingSpinner /> : resolvedCount.toString();
+
   return (
     <AuthGate>
       <RequireRole roles={["admin", "operator", "executive", "observer"]}>
         <div className="space-y-6">
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <KpiCard
-          label="Active incidents"
-          value={metrics.incidents.toString()}
-          delta="-18% vs last week"
-          trend="down"
-          icon={<ShieldIcon />}
-          caption="Sev-1 automation closed 3 in the past day"
-        />
-        <KpiCard
-          label="MTTR"
-          value={metrics.mttr}
-          delta="11m faster"
-          trend="up"
-          icon={<Activity className="h-5 w-5" />}
-          caption="AI Agents recommended 4 mitigations"
-        />
-        <KpiCard
-          label="Automation rate"
-          value={metrics.automation}
-          delta="+6 pts"
-          icon={<Bot className="h-5 w-5" />}
-          caption="Runbooks executed automatically in 55% of incidents"
-        />
-        <KpiCard
-          label="Cost savings"
-          value={metrics.savings}
-          delta="+$140K this quarter"
-          icon={<PiggyBank className="h-5 w-5" />}
-          caption="Noise reduction & toil avoidance"
-        />
-      </section>
-      <section className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="section-title">Incident trends</p>
-              <p className="text-white/70">
-                AI explains which stages reduced MTTR (Monitor &gt; Analyze &gt; Automate)
-              </p>
-            </div>
-            <ArrowDownRight className="h-5 w-5 text-emerald-300" />
-          </div>
-          <div className="mt-4">
-            <TrendChart
-              data={incidentTrend}
-              lines={[
-                { dataKey: "incidents", color: "#f472b6", name: "Incidents" },
-                { dataKey: "aiClosed", color: "#34d399", name: "AI-closed" },
-              ]}
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <KpiCard
+              label="Active incidents"
+              value={activeDisplayValue}
+              delta="-18% vs last week"
+              trend="down"
+              icon={<ShieldIcon />}
+              caption={
+                backendData ? "Currently active incidents from backend" : "Sev-1 automation closed 3 in the past day"
+              }
             />
-          </div>
-        </Card>
-        <div className="space-y-4">
-          <p className="section-title">AI Insights</p>
-          {aiInsights.map((insight) => (
-            <AiInsightCard key={insight.id} insight={insight} />
-          ))}
-        </div>
-      </section>
-      <section className="grid gap-6 lg:grid-cols-3">
-        <Card className="space-y-3 lg:col-span-2">
-          <p className="section-title">Service health</p>
-          <div className="grid gap-3 md:grid-cols-2">
-            {services.map((service) => (
-              <HealthPill service={service} key={service.id} />
-            ))}
-          </div>
-        </Card>
-        <MiniList
-          title="Recent anomalies"
-          items={topAnomalies.map((anomaly) => ({
-            id: anomaly.id,
-            title: `${anomaly.metric} - ${anomaly.value} (baseline ${anomaly.baseline})`,
-            meta: `Detected ${new Date(anomaly.detectedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
-            status: anomaly.severity === "critical" ? "err" : anomaly.severity === "high" ? "warn" : "ok",
-          }))}
-        />
-      </section>
+            <KpiCard
+              label="Resolved incidents"
+              value={resolvedDisplayValue}
+              delta="AI Agent & Hotfix only"
+              icon={<ShieldIcon />}
+              caption="Filtered by backend incidents service"
+            />
+            <KpiCard
+              label="MTTR"
+              value={metrics.mttr}
+              delta="11m faster"
+              trend="up"
+              icon={<Activity className="h-5 w-5" />}
+              caption="AI Agents recommended 4 mitigations"
+            />
+            <KpiCard
+              label="Automation rate"
+              value={metrics.automation}
+              delta="+6 pts"
+              icon={<Bot className="h-5 w-5" />}
+              caption="Runbooks executed automatically in 55% of incidents"
+            />
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-3">
+            <Card className="space-y-3 lg:col-span-2">
+              <p className="section-title">Service health</p>
+              <div className="grid gap-3 md:grid-cols-2">
+                {services.map((service) => (
+                  <HealthPill service={service} key={service.id} />
+                ))}
+              </div>
+            </Card>
+            <MiniList
+              title="Recent anomalies"
+              items={topAnomalies.map((anomaly) => ({
+                id: anomaly.id,
+                title: `${anomaly.metric} - ${anomaly.value} (baseline ${anomaly.baseline})`,
+                meta: `Detected ${new Date(anomaly.detectedAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}`,
+                status:
+                  anomaly.severity === "critical"
+                    ? "err"
+                    : anomaly.severity === "high"
+                    ? "warn"
+                    : "ok",
+              }))}
+            />
+          </section>
+
+          <section className="grid gap-6">
+            <Card className="space-y-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="section-title">Recent closed incidents</p>
+                  <p className="text-sm text-white/70">
+                    Pulled from <span className="font-semibold">http://localhost:8000/incidents</span>
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {(["recent", "types"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setClosedTab(tab)}
+                      className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase transition ${
+                        closedTab === tab
+                          ? "border-emerald-400 bg-emerald-500/10 text-emerald-200"
+                          : "border-white/10 text-white/50 hover:border-white/40"
+                      }`}
+                    >
+                      {tab === "recent" ? "Recent closed" : "Type breakdown"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="min-h-[180px] space-y-3">
+                {backendLoading && <p className="text-sm text-white/70">Loading incidents…</p>}
+                {backendError && <p className="text-sm text-rose-400">{backendError}</p>}
+                {!backendLoading && !backendError && closedTab === "recent" && (
+                  <>
+                    {recentClosed.length === 0 && (
+                      <p className="text-sm text-white/60">No closed incidents available.</p>
+                    )}
+                    {recentClosed.map((incident, index) => (
+                      <div
+                        key={incident.sys_id ?? incident.number ?? index}
+                        className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/5 p-3 text-sm"
+                      >
+                        <div className="flex items-baseline justify-between gap-3">
+                          <p className="font-semibold">{incident.number ?? "Unknown"}</p>
+                          <p className="text-xs text-white/60">
+                            {incident.closed_at
+                              ? new Date(incident.closed_at).toLocaleString()
+                              : "Closed date unknown"}
+                          </p>
+                        </div>
+                        <p className="text-white/70">{incident.short_description ?? "No description"}</p>
+                        <p className="text-xs text-white/50">
+                          {incident.close_notes ?? "Closed by AI agent"} • Notify: {incident.notify ?? "n/a"}
+                        </p>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {!backendLoading && !backendError && closedTab === "types" && (
+                  <>
+                    {incidentTypeBreakdown.length === 0 && (
+                      <p className="text-sm text-white/60">No incident type data available.</p>
+                    )}
+                    {incidentTypeBreakdown.map((type) => (
+                      <div
+                        key={type.type}
+                        className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-3 text-sm"
+                      >
+                        <p className="font-semibold">{type.type}</p>
+                        <p className="text-xs text-white/70">{type.count}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </Card>
+          </section>
         </div>
       </RequireRole>
     </AuthGate>

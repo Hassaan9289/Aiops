@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Card } from "./card";
 import { cn } from "@/lib/utils";
 
 interface KpiCardProps {
   label: string;
-  value: string;
+  value: ReactNode;
   delta?: string;
   trend?: "up" | "down";
   caption?: string;
