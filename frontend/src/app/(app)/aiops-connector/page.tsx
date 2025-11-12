@@ -124,26 +124,26 @@ export default function AIOpsConnectorPage() {
       <RequireRole roles={["admin", "operator"]}>
         <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
           <aside className="space-y-4">
-            <Card className="space-y-3 rounded-[28px] border border-[var(--border)] bg-[var(--card-muted)] p-4">
+            <Card className="space-y-3 border border-[var(--border)] bg-[var(--card-muted)] p-4">
               <p className="text-xs uppercase tracking-wide text-[var(--muted)]">Navigation layout</p>
               <div className="space-y-2">
                 {leftNav.map((item) => (
-                  <button
-                    key={item.id}
-                    className={cn(
-                      "flex w-full flex-col gap-0.5 rounded-2xl px-3 py-2 text-left text-sm transition",
-                      activeTab === item.id
-                        ? "bg-[var(--card)] text-[var(--text)]"
-                        : "text-[var(--muted)] hover:bg-white/5",
-                    )}
-                    onClick={() => {
-                      if (item.id === "status") {
-                        setActiveTab("all");
-                      } else {
-                        setActiveTab(item.id as "all" | "add" | "logs");
-                      }
-                    }}
-                  >
+                    <button
+                      key={item.id}
+                      className={cn(
+                        "flex w-full flex-col gap-0.5 px-3 py-2 text-left text-sm transition",
+                        activeTab === item.id
+                          ? "bg-[var(--card)] text-[var(--text)]"
+                          : "text-[var(--muted)] hover:bg-white/5",
+                      )}
+                      onClick={() => {
+                        if (item.id === "status") {
+                          setActiveTab("all");
+                        } else {
+                          setActiveTab(item.id as "all" | "add" | "logs");
+                        }
+                      }}
+                    >
                     <span className="font-medium">{item.label}</span>
                     <span className="text-[10px] uppercase tracking-widest">{item.hint}</span>
                   </button>
@@ -151,7 +151,7 @@ export default function AIOpsConnectorPage() {
               </div>
             </Card>
 
-            <Card className="rounded-[28px] border border-[var(--border)] bg-[var(--card-muted)] p-4">
+            <Card className="border border-[var(--border)] bg-[var(--card-muted)] p-4">
               <p className="text-xs uppercase tracking-wide text-[var(--muted)]">Connection status</p>
               <div className="mt-3 space-y-2 text-sm text-[var(--text)]">
                 <p>
@@ -161,9 +161,9 @@ export default function AIOpsConnectorPage() {
                   <span className="font-semibold">{staleCount}</span> need resync or credentials review.
                 </p>
                 <div className="flex gap-2 text-xs text-[var(--muted)]">
-                  <span className="rounded-full border border-white/20 px-2 py-1">Healthy</span>
-                  <span className="rounded-full border border-white/20 px-2 py-1">Pending</span>
-                  <span className="rounded-full border border-white/20 px-2 py-1">Errors</span>
+                  <span className="border border-white/20 px-2 py-1">Healthy</span>
+                  <span className="border border-white/20 px-2 py-1">Pending</span>
+                  <span className="border border-white/20 px-2 py-1">Errors</span>
                 </div>
               </div>
             </Card>
@@ -171,7 +171,7 @@ export default function AIOpsConnectorPage() {
           </aside>
 
           <section className="space-y-6">
-            <Card className="rounded-[32px] border border-[var(--border)] bg-[var(--card-muted)] p-6">
+            <Card className="border border-[var(--border)] bg-[var(--card-muted)] p-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-[var(--muted)]">AIops connector</p>
@@ -193,18 +193,18 @@ export default function AIOpsConnectorPage() {
                 Administrators can view connector health, run analytics, and orchestrate new connections from a single control plane.
               </p>
               <div className="mt-5 flex flex-wrap gap-3 text-sm text-white/80">
-                <span className="flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1">
+                <span className="flex items-center gap-2 border border-[var(--border)] px-3 py-1">
                   <Activity className="h-4 w-4" />
                   {connectedCount} connected
                 </span>
-                <span className="flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1">
+                <span className="flex items-center gap-2 border border-[var(--border)] px-3 py-1">
                   <Plus className="h-4 w-4" />
                   {staleCount} pending sync
                 </span>
               </div>
             </Card>
 
-            <Card className="space-y-4 rounded-[32px] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <Card className="space-y-4 border border-[var(--border)] bg-[var(--surface)] p-5">
               <div className="flex items-center gap-4 border-b border-[var(--border)] pb-3">
                 {["All connectors", "Add Connector", "Logs"].map((tab) => (
                   <button
@@ -226,7 +226,7 @@ export default function AIOpsConnectorPage() {
 
               {activeTab === "all" && (
                 <div className="space-y-4">
-                  <div className="overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--card-muted)]">
+                  <div className="overflow-x-auto border border-[var(--border)] bg-[var(--card-muted)]">
                     <table className="w-full table-fixed text-sm">
                       <thead className="bg-white/5 text-[var(--muted)]">
                         <tr className="text-left text-xs uppercase tracking-widest">
@@ -277,7 +277,7 @@ export default function AIOpsConnectorPage() {
                       <button
                         key={label}
                         className={cn(
-                          "flex items-center gap-2 rounded-2xl border px-3 py-1 text-xs uppercase tracking-widest transition",
+                          "flex items-center gap-2 border px-3 py-1 text-xs uppercase tracking-widest transition",
                           isActive
                             ? "border-white bg-gradient-to-r from-indigo-600/90 to-purple-600/80 text-white shadow-[0_0_18px_rgba(79,70,229,0.5)]"
                             : "border-white/20 bg-transparent text-[var(--muted)]",
@@ -427,7 +427,7 @@ export default function AIOpsConnectorPage() {
                         <button
                           type="button"
                           className={cn(
-                            "rounded-full border px-3 py-1 text-sm transition",
+                            "border px-3 py-1 text-sm transition",
                             form.enableSync ? "border-emerald-400 text-emerald-300" : "border-white/20 text-[var(--muted)]",
                           )}
                           onClick={toggleEnableSync}
@@ -440,9 +440,9 @@ export default function AIOpsConnectorPage() {
                   )}
 
                   {step === 3 && (
-                    <Card className="rounded-2xl border border-dashed border-white/10 bg-transparent p-4 text-sm text-[var(--muted)]">
+                      <Card className="border border-dashed border-white/10 bg-transparent p-4 text-sm text-[var(--muted)]">
                       <p className="text-xs uppercase tracking-wide text-[var(--muted)]">Review payload</p>
-                      <pre className="mt-2 max-h-52 overflow-auto rounded-xl bg-black/30 p-3 text-xs text-white">
+                      <pre className="mt-2 max-h-52 overflow-auto bg-black/30 p-3 text-xs text-white">
                         {JSON.stringify(
                           {
                             ...samplePayload,
@@ -490,7 +490,7 @@ export default function AIOpsConnectorPage() {
               {activeTab === "logs" && (
                 <div className="space-y-3">
                   {logEntries.map((entry) => (
-                    <Card key={entry.id} className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card-muted)] p-4">
+                    <Card key={entry.id} className="flex items-center justify-between border border-[var(--border)] bg-[var(--card-muted)] p-4">
                       <div>
                         <p className="text-sm text-[var(--text)]">{entry.message}</p>
                         <p className="text-xs text-[var(--muted)]">{entry.time}</p>
