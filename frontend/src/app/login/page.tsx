@@ -154,7 +154,7 @@ export default function LoginPage() {
           <div className="absolute right-28 bottom-10 h-32 w-1 rounded-full bg-gradient-to-b from-[#a855f7] to-transparent" />
           <div className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#cbd5f5]" />
           <div className="relative flex h-full flex-col items-center justify-center gap-6 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[#6366f1]/80">AIOps</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-[#6366f1]/80">ROYAL CYBER AIOPS</p>
             <h2 className="text-3xl font-semibold text-[var(--text)]">Actionable intelligence for every service</h2>
             <p className="max-w-xs text-sm text-[var(--muted)]">
               Continuous monitoring, anomaly detection, and automation prompts keep your estate resilient
