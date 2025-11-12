@@ -190,9 +190,6 @@ useEffect(() => {
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="section-title">Recent closed incidents</p>
-                  <p className="text-sm text-white/70">
-                    Pulled from <span className="font-semibold">http://localhost:8000/incidents</span>
-                  </p>
                 </div>
                 <div className="flex gap-2">
                   {(["recent", "types"] as const).map((tab) => (
