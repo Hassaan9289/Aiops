@@ -26,7 +26,7 @@ export default function UserManagementPage() {
 
   return (
     <AuthGate>
-      <RequireRole roles={["admin", "operator"]}>
+      <RequireRole roles={["admin"]}>
         <section className="space-y-6">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-4">
