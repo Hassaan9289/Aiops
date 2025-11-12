@@ -51,7 +51,7 @@ export default function CloudsPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="section-title">Cloud footprint</p>
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-[var(--muted)]">
                 Manage enterprise cloud estates across hyperscalers. Track posture, connectivity, and open tasks.
               </p>
             </div>
@@ -61,9 +61,9 @@ export default function CloudsPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {clouds.map((cloud) => (
-              <Card key={cloud.name} className="space-y-3 ">
+              <Card key={cloud.name} className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Badge >
+                  <Badge variant="outline" className="border-white/10 bg-white/5 text-[var(--text)]">
                     {cloud.provider}
                   </Badge>
                   <div className="flex h-12 w-20 items-center justify-center rounded-lg bg-white/10 p-1">
@@ -77,14 +77,14 @@ export default function CloudsPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-white">{cloud.name}</h3>
-                  <p className="text-sm text-white/60">{cloud.description}</p>
+                  <h3 className="text-xl font-semibold text-[var(--text)]">{cloud.name}</h3>
+                  <p className="text-sm text-[var(--muted)]">{cloud.description}</p>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <Badge variant={statusVariant[cloud.status]} className="capitalize">
                     {cloud.status}
                   </Badge>
-                  <button className="text-sm font-semibold text-[var(--accent)]">View details</button>
+                  <button className="text-sm font-semibold text-[var(--text)]">View details</button>
                 </div>
               </Card>
             ))}

@@ -55,7 +55,7 @@ const nav: { label: string; items: NavItem[] }[] = [
       { label: "Hybrids", href: "/hybrids", icon: CloudSun, roles: ["admin", "operator", "executive"] },
       { label: "Clouds", href: "/clouds", icon: Cloud, roles: ["admin", "operator", "executive"] },
       { label: "Agent management", href: "/agent-management", icon: UserCog, roles: ["admin", "operator"] },
-      { label: "MCP", href: "/mcp", icon: ServerCog, roles: ["admin", "operator"] },
+      { label: "MCP Servers", href: "/mcp", icon: ServerCog, roles: ["admin", "operator"] },
       { label: "ChatOps", href: "/chatops", icon: MessageCircle, roles: ["admin", "operator"] },
     ],
   },
