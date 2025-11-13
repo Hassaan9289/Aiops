@@ -62,9 +62,9 @@ const nav: { label: string; items: NavItem[] }[] = [
   },
   {
     label: "Operations",
-    items: [
-      { label: "Integrations", href: "/integrations", icon: PlugZap, roles: ["admin", "operator"] },
-      { label: "AIOps connector", href: "/aiops-connector", icon: Share2, roles: ["admin", "operator"] },
+      items: [
+        { label: "Connectors", href: "/integrations", icon: PlugZap, roles: ["admin", "operator"] },
+        { label: "AIOps connector", href: "/aiops-connector", icon: Share2, roles: ["admin", "operator"] },
       { label: "User management", href: "/user-management", icon: UserCircle2, roles: ["admin"] },
     ],
   },

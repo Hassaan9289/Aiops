@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,10 +33,13 @@ export default function ChatOpsPage() {
               Start new chat
             </Button>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <Card className="space-y-3 border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">{teamsChannel.name}</h3>
+                <div className="flex items-center gap-3">
+                  <Image src="/logos/teamslogo.png" width={32} height={32} alt="Microsoft Teams" />
+                  <h3 className="text-lg font-semibold text-white">{teamsChannel.name}</h3>
+                </div>
                 <Badge variant={statusVariant[teamsChannel.status]}>{teamsChannel.status}</Badge>
               </div>
               <p className="text-sm text-white/50">Owner: {teamsChannel.owner}</p>
@@ -55,7 +59,10 @@ export default function ChatOpsPage() {
             </Card>
             <Card className="space-y-3 border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">Custom Web</h3>
+                <div className="flex items-center gap-3">
+                  <Image src="/logos/customweb.png" width={32} height={32} alt="Custom Web" />
+                  <h3 className="text-lg font-semibold text-white">Custom Web</h3>
+                </div>
                 <Badge variant="default">Available</Badge>
               </div>
               <p className="text-sm text-white/50">Owner: AI Ops Webhook</p>

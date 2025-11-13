@@ -13,7 +13,7 @@ const statusColor: Record<string, "success" | "warning" | "danger"> = {
   error: "danger",
 };
 
-export default function IntegrationsPage() {
+export default function ConnectorsPage() {
   return (
     <AuthGate>
       <RequireRole roles={["admin", "operator", "executive"]}>
