@@ -29,9 +29,6 @@ export default function ChatOpsPage() {
               <p className="section-title">ChatOps</p>
               <p className="text-sm text-white/60">Orchestrate conversations, tickets, and playbooks with automation.</p>
             </div>
-            <Button variant="default" className="px-4 py-2 text-sm">
-              Start new chat
-            </Button>
           </div>
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <Card className="space-y-3 border border-white/10 bg-white/5 p-5">
