@@ -8,6 +8,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { HealthPill } from "@/components/ui/HealthPill";
 import { MiniList } from "@/components/ui/MiniList";
 import { AiInsightCard } from "@/components/insights/AiInsightCard";
+import ClosedIncidentDrawer from "@/components/incidents/ClosedIncidentDrawer";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { RequireRole } from "@/components/auth/RequireRole";
 
@@ -52,7 +53,7 @@ export default function DashboardPage() {
   const [backendData, setBackendData] = useState<BackendResponse | null>(null);
   const [backendError, setBackendError] = useState<string | null>(null);
   const [backendLoading, setBackendLoading] = useState(false);
-  const [closedTab, setClosedTab] = useState<"recent" | "types">("recent");
+  const [selectedClosedIncident, setSelectedClosedIncident] = useState<BackendIncident | null>(null);
 
   const topAnomalies = useMemo(() => anomalies.slice(0, 4), [anomalies]);
 
@@ -112,7 +113,6 @@ useEffect(() => {
       )
       .slice(0, 5);
   }, [backendData]);
-  const incidentTypeBreakdown = backendData?.incidentTypes ?? [];
   const activeDisplayValue = backendLoading ? <LoadingSpinner /> : (
     backendData?.activeCount ?? metrics.incidents
   ).toString();
@@ -188,73 +188,47 @@ useEffect(() => {
           <section className="grid gap-6">
             <Card className="space-y-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="section-title">Recent closed incidents</p>
-                </div>
-                <div className="flex gap-2">
-                  {(["recent", "types"] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => setClosedTab(tab)}
-                      className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase transition ${
-                        closedTab === tab
-                          ? "border-emerald-400 bg-emerald-500/10 text-emerald-200"
-                          : "border-white/10 text-white/50 hover:border-white/40"
-                      }`}
-                    >
-                      {tab === "recent" ? "Recent closed" : "Type breakdown"}
-                    </button>
-                  ))}
-                </div>
+                <p className="section-title">Recent closed incidents</p>
               </div>
               <div className="min-h-[180px] space-y-3">
                 {backendLoading && <p className="text-sm text-white/70">Loading incidents…</p>}
                 {backendError && <p className="text-sm text-rose-400">{backendError}</p>}
-                {!backendLoading && !backendError && closedTab === "recent" && (
+                {!backendLoading && !backendError && (
                   <>
                     {recentClosed.length === 0 && (
                       <p className="text-sm text-white/60">No closed incidents available.</p>
                     )}
                     {recentClosed.map((incident, index) => (
-                      <div
+                      <button
                         key={incident.sys_id ?? incident.number ?? index}
-                        className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/5 p-3 text-sm"
+                        type="button"
+                        onClick={() => setSelectedClosedIncident(incident)}
+                        className="flex w-full flex-col gap-1 rounded-lg border border-white/5 bg-white/5 p-3 text-left text-sm transition hover:border-white/20 hover:bg-white/10"
                       >
                         <div className="flex items-baseline justify-between gap-3">
-                          <p className="font-semibold">{incident.number ?? "Unknown"}</p>
+                          <p className="font-semibold">{incident.number ?? 'Unknown'}</p>
                           <p className="text-xs text-white/60">
                             {incident.closed_at
                               ? new Date(incident.closed_at).toLocaleString()
-                              : "Closed date unknown"}
+                              : 'Closed date unknown'}
                           </p>
                         </div>
-                        <p className="text-white/70">{incident.short_description ?? "No description"}</p>
+                        <p className="text-white/70">{incident.short_description ?? 'No description'}</p>
                         <p className="text-xs text-white/50">
-                          {incident.close_notes ?? "Closed by AI agent"} • Notify: {incident.notify ?? "n/a"}
+                          {(incident.close_notes && String(incident.close_notes)) || 'Closed by AI agent'} • Notify: {incident.notify ?? 'n/a'}
                         </p>
-                      </div>
-                    ))}
-                  </>
-                )}
-                {!backendLoading && !backendError && closedTab === "types" && (
-                  <>
-                    {incidentTypeBreakdown.length === 0 && (
-                      <p className="text-sm text-white/60">No incident type data available.</p>
-                    )}
-                    {incidentTypeBreakdown.map((type) => (
-                      <div
-                        key={type.type}
-                        className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-3 text-sm"
-                      >
-                        <p className="font-semibold">{type.type}</p>
-                        <p className="text-xs text-white/70">{type.count}</p>
-                      </div>
+                      </button>
                     ))}
                   </>
                 )}
               </div>
             </Card>
+            {selectedClosedIncident && (
+              <ClosedIncidentDrawer
+                incident={selectedClosedIncident}
+                onClose={() => setSelectedClosedIncident(null)}
+              />
+            )}
           </section>
         </div>
       </RequireRole>

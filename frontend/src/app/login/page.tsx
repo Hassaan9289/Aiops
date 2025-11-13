@@ -1,18 +1,18 @@
 'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { BrandMark } from "@/components/layout/BrandMark";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { mockUsers } from "@/lib/auth/mockUsers";
-import { useSessionStore } from "@/lib/auth/session";
 import { Role } from "@/lib/auth/rbac";
+import { useSessionStore } from "@/lib/auth/session";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BrandMark } from "@/components/layout/BrandMark";
 
 const roleVariant: Record<Role, string> = {
   admin: "text-rose-400",
@@ -68,15 +68,6 @@ export default function LoginPage() {
         </div>
         <div className="space-y-4">
           <h1 className="text-4xl font-semibold leading-tight">Log in to Royal Cyber</h1>
-          <p className="text-sm text-[var(--muted)]">
-            Don’t have an account?{" "}
-            <Link
-              href="/signup"
-              className="font-semibold text-[#2563eb] transition hover:text-[#1d4ed8]"
-            >
-              Create one
-            </Link>
-          </p>
         </div>
         <Card className="max-w-2xl space-y-6 border border-[var(--border)] bg-[var(--surface)]/90 p-8 shadow-[0_25px_50px_rgba(15,23,42,0.12)] backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">

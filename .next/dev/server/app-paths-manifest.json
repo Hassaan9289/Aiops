@@ -1,0 +1,13 @@
+{
+  "/page": "app/page.js",
+  "/login/page": "app/login/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(app)/clouds/page": "app/(app)/clouds/page.js",
+  "/(app)/enterprise-systems/page": "app/(app)/enterprise-systems/page.js",
+  "/(app)/hybrids/page": "app/(app)/hybrids/page.js",
+  "/(app)/agent-management/page": "app/(app)/agent-management/page.js",
+  "/(app)/mcp/page": "app/(app)/mcp/page.js",
+  "/(app)/chatops/page": "app/(app)/chatops/page.js",
+  "/(app)/user-management/page": "app/(app)/user-management/page.js",
+  "/(app)/integrations/page": "app/(app)/integrations/page.js"
+}
